@@ -53,7 +53,7 @@ const TakePictureButton = () => {
     formData.append('longitude', location.longitude); // Append longitude
 
     // Send the image, date, and location to the backend
-    fetch('http://127.0.0.1:5000/api/upload', {
+    fetch('https://hackumbc2024.onrender.com/api/upload', {
       method: 'POST',
       body: formData,
     })

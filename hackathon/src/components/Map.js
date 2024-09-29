@@ -86,7 +86,7 @@ const MapComponent = ({ showScorePopup }) => {
             }
         );
 
-        fetch("http://127.0.0.1:5000/api/get-environment-data")
+        fetch("https://hackumbc2024.onrender.com/api/get-environment-data")
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
