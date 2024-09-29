@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet.heat';
@@ -54,19 +54,11 @@ const ShowScorePopup = () => {
     });
 
     const showScorePopup = (position, scores, image) => {
-        setPopupData({
-            position: position,
-            scores: scores,
-            image: image
-        });
+        setPopupData({ position, scores, image });
     };
 
     const closePopup = () => {
-        setPopupData({
-            position: null,
-            scores: [],
-            image: null
-        });
+        setPopupData({ position: null, scores: [], image: null });
     };
 
     return (
@@ -80,6 +72,7 @@ const ShowScorePopup = () => {
 const MapComponent = ({ showScorePopup }) => {
     const [position, setPosition] = useState(null);
     const [heatmapData, setHeatmapData] = useState([]);
+    const [markers, setMarkers] = useState([]);
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(
@@ -89,22 +82,29 @@ const MapComponent = ({ showScorePopup }) => {
             },
             (error) => {
                 console.error("Error getting the user's location: ", error);
-                setPosition([39.25, -76.713]);
+                setPosition([39.25, -76.713]); // Default position
             }
         );
-        
+
         fetch("http://127.0.0.1:5000/api/get-environment-data")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const heatData = data.map(item => [item.latitude, item.longitude, item.score / 10, item.image]); // Including image
-            setHeatmapData(heatData);
-        })
-        .catch((error) => console.error("Error fetching heatmap data:", error));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const heatData = data.map(item => [item.latitude, item.longitude, item.score / 10]);
+                const markerData = data.map(item => ({
+                    lat: item.latitude,
+                    lng: item.longitude,
+                    score: item.score,
+                    image: item.image_data
+                }));
+                setHeatmapData(heatData);
+                setMarkers(markerData);
+            })
+            .catch((error) => console.error("Error fetching heatmap data:", error));
     }, []);
 
     if (!position) {
@@ -118,6 +118,16 @@ const MapComponent = ({ showScorePopup }) => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
             {heatmapData.length > 0 && <HeatmapLayer points={heatmapData} showScorePopup={showScorePopup} />}
+            {markers.map((marker, index) => (
+                <Marker key={index} position={[marker.lat, marker.lng]}>
+                    <Popup>
+                        <div>
+                            <strong>Score: {marker.score}</strong><br />
+                            <img src={marker.image} alt="Location" style={{ width: '100px', height: 'auto' }} />
+                        </div>
+                    </Popup>
+                </Marker>
+            ))}
         </MapContainer>
     );
 };
@@ -127,38 +137,22 @@ const HeatmapLayer = ({ points, showScorePopup }) => {
 
     useEffect(() => {
         if (points.length > 0) {
-            const heat = L.heatLayer(points.map(([lat, lng, score]) => [lat, lng, score]), { 
+            const heat = L.heatLayer(points.map(([lat, lng, score]) => [lat, lng, score]), {
                 radius: 40,
                 blur: 25,
                 maxZoom: 17,
-                gradient: {  
+                gradient: {
                     0.0: 'red',
                     0.5: 'yellow',
                     1.0: 'green'
                 }
             }).addTo(map);
 
-            map.on('click', (e) => {
-                const { lat, lng } = e.latlng;
-                const nearbyPoints = points.filter(([pointLat, pointLng]) => {
-                    const distance = map.distance([lat, lng], [pointLat, pointLng]);
-                    return distance < 50;
-                });
-
-                if (nearbyPoints.length > 0) {
-                    const scores = nearbyPoints.map(([lat, lng, score]) => score * 10);
-                    const image = nearbyPoints[0][3];  // Get the image from the first nearby point
-                    showScorePopup(e.latlng, scores, image);
-                } else {
-                    showScorePopup(null, [], null);
-                }
-            });
-
             return () => {
                 map.removeLayer(heat);
             };
         }
-    }, [points, map, showScorePopup]);
+    }, [points, map]);
 
     return null;
 };

@@ -103,6 +103,7 @@ def get_environment_data():
             "image_data": f"data:image/jpeg;base64,{upload.image_data}",
             "score": upload.score
         })
+    print("Getting environment data")
     return jsonify(result)
 
 if __name__ == '__main__':
