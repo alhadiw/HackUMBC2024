@@ -1,4 +1,66 @@
-.map-container {
-    height: 80vh;
+.popup-container {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    z-index: 1000;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 350px;
+    width: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.popup-content {
     position: relative;
+    text-align: center;
+}
+
+h3 {
+    margin-top: 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 10px;
+}
+
+li {
+    background-color: #f5f5f5;
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1.1em;
+}
+
+p {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.location-image {
+    margin-top: 15px;
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #888;
+}
+
+.close-button:hover {
+    color: #555;
 }
