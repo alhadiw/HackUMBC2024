@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from touchGrass import getText, encode_image
+from backend.touchGrass import getText, encode_image
 import json
 import base64
 import os
