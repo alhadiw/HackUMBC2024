@@ -59,7 +59,7 @@ def upload_image():
     # Save the base64 image string in the database
     new_upload = Upload(
         filename=filename,
-        image_data=image.split(',')[1],  # Save the base64 string (without the metadata)
+        image_data=image_64,
         date_taken=date_taken,
         latitude=float(latitude),
         longitude=float(longitude),
@@ -100,6 +100,7 @@ def get_environment_data():
             "id": upload.id,
             "latitude": upload.latitude,
             "longitude": upload.longitude,
+            "image_data": f"data:image/jpeg;base64,{upload.image_data}",
             "score": upload.score
         })
     return jsonify(result)
