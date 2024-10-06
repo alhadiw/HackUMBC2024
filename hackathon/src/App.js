@@ -1,14 +1,11 @@
 // src/App.js
 import React from 'react';
-import MapComponent from './components/Map';
-import TakePictureButton from './components/TakePictureButton';
-
+import Title from './components/title'
 
 function App() {
   return (
     <div className="App">
-      <MapComponent />
-      <TakePictureButton />
+      <Title/>
     </div>
   );
 }

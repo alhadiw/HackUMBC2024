@@ -1,0 +1,40 @@
+.app-container {
+    display: flex;
+    flex-direction: column; /* Ensure content is stacked vertically */
+    height: 100vh; /* Use full viewport height */
+    margin: 0; /* Remove any default margins */
+}
+
+.Title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0; /* Adjust margin to prevent overflow */
+    height: 10vh; /* Allow height to adjust based on content */
+    overflow: hidden; /* Prevent overflow */
+}
+
+.map-container {
+    flex-grow: 1; /* Allow map-container to take remaining space */
+    height: 0; /* Prevent default height */
+}
+
+.Title-container img {
+    max-width: 100%; /* Ensure images don't exceed container width */
+    max-height: 100%; /* Ensure images don't exceed container height */
+    height: auto; /* Maintain aspect ratio */
+    margin: 0 10px; /* Optional: spacing between images */
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    .Title-container {
+        height: 20vh;
+        flex-direction: row; /* Stack images vertically */
+    }
+
+    .Title-container img {
+        max-width: 60%; /* Adjust max width for smaller screens */
+        margin: 5px 0; /* Adjust margin for spacing */
+    }
+}
